@@ -22,7 +22,7 @@ public class ApiTestcases {
         );
     }
 
-    @Test
+    @Test(groups={"smoke"})
     public void verifyGetUser() {
         RestAssured.baseURI = "https://reqres.in/api/users";
         Response response = given()
@@ -42,7 +42,7 @@ public class ApiTestcases {
                 "Weaver");
     }
 
-    @Test
+    @Test(groups={"regression"})
     public void createUser() {
         RestAssured.baseURI = "https://reqres.in";
         Map<String, String> requestBody = new HashMap<>();

@@ -2,6 +2,9 @@ version: 2.1
 
 jobs:
   test:
+    parameters:
+      suite:
+        type: string
     docker:
       - image: cimg/openjdk:21.0
     steps:
@@ -11,8 +14,8 @@ jobs:
             - maven-v1-{{ checksum "pom.xml" }}
             - maven-v1-
       - run:
-          name: Run API tests
-          command: mvn -B clean test
+          name: Run << parameters.suite >>
+          command: mvn -B clean test -Dtestng.suite=<< parameters.suite >>
       - save_cache:
           key: maven-v1-{{ checksum "pom.xml" }}
           paths:
@@ -21,8 +24,17 @@ jobs:
           path: target/surefire-reports
       - store_artifacts:
           path: target/surefire-reports
+      - store_test_results:
+          path: target/surefire-reports/junitreports
+      - store_artifacts:
+          path: target/surefire-reports
 
 workflows:
   test:
     jobs:
-      - test
+      - test:
+          name: smoke
+          suite: testngSmoke.xml
+      - test:
+          name: regression
+          suite: testngRegression.xml
